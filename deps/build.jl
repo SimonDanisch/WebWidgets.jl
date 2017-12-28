@@ -18,7 +18,7 @@ for elem in readdir(asset_dir)
         try
             println("Copying: $file_target")
             cp(file_source, file_target)
-        catch
+        catch e
             warn(e)
         end
     end

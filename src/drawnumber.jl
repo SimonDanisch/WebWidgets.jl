@@ -39,7 +39,7 @@ function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
     w = Widget()
     painting = Observable{Bool}(w, "painting", false)
     paintbrush_ob = Observable(w, "paintbrush", 10)
-    paintbrush = slider(1:20, ob = paintbrush_ob, direction = "vertical")
+    paintbrush = slider(1:20, ob = paintbrush_ob)
     on_mousedown = @js function (e, context)
         $painting[] = true
         @var el = context.dom.querySelector("#surface")
@@ -126,6 +126,12 @@ function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
         window.redraw(context, $paintbrush_ob[])
     end)
 
+    onjs(paintbrush_ob, @js function (val)
+        @var el = this.dom.querySelector("#surface")
+        @var context = el.getContext("2d")
+        window.redraw(context, $paintbrush_ob[])
+    end)
+
     clear = dom"button"("clear", events = Dict("click" => @js function ()
        $clear_obs[] = !$clear_obs[]
     end))
@@ -135,8 +141,11 @@ function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
     end))
 
     prediction_text = pred_widget(dom"div#prediction_text"(""))
-
-    vbox(hbox(clear, predict, prediction_text), hbox(paintbrush, canvas))
+    paintbrushdiv = dom"div"(
+        paintbrush,
+        style = Dict(:width => "$(round(Int, 1.5width))px")
+    )
+    vbox(vbox(paintbrushdiv, hbox(clear, predict, prediction_text)), canvas)
 end
 
 end

@@ -10,10 +10,8 @@
 
 First install:
 ```Julia
-# setup
-# Uncomment the following 2 lines for an initial setup:
-# Pkg.clone("https://github.com/SimonDanisch/WebWidgets.jl")
-# Pkg.build("WebWidgets")
+Pkg.clone("https://github.com/SimonDanisch/WebWidgets.jl")
+Pkg.build("WebWidgets")
 ```
 Updates:
 ```Julia

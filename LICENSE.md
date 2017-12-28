@@ -1,4 +1,4 @@
-The WebCanvas.jl package is licensed under the MIT "Expat" License:
+The WebWidgets.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2017: SimonDanisch.
 >

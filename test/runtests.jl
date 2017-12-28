@@ -1,5 +1,7 @@
-using WebCanvas
+using WebWidgets, Blink
 using Base.Test
+w = Window()
+body!(w, drawnumber())
+tools(w)
 
-# write your own tests here
-@test 1 == 2
+using InteractNext

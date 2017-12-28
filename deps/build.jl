@@ -9,7 +9,6 @@ Pkg.checkout("Observables")
 installgizmo("Vue")
 installgizmo("CSSUtil")
 installgizmo("InteractNext")
-Pkg.add("Images")
 asset_dir = Pkg.dir("WebWidgets", "assets")
 wio_asset_dir = Pkg.dir("WebIO", "assets")
 for elem in readdir(asset_dir)
@@ -17,8 +16,10 @@ for elem in readdir(asset_dir)
     file_target = joinpath(wio_asset_dir, elem)
     if !(isfile(file_target) || isdir(file_target))
         try
+            println("Copying: $file_target")
             cp(file_source, file_target)
-            println(file_source)
+        catch
+            warn(e)
         end
     end
 end

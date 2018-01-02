@@ -1,3 +1,5 @@
 using WebWidgets, Blink
 using Base.Test
-drawnumber()
+w = Window()
+body!(w, drawnumber(resolution = (500, 500)))
+# tools(w)

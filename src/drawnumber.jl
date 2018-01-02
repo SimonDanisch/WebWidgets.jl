@@ -5,15 +5,16 @@ using InteractNext, CSSUtil
 
 # using the string macro since for loops + ifs seem to make problems
 const redraw = js"""
-function redraw(context, brushsize){
-    context.clearRect(0, 0, 200, 200); // Clears the canvas
+function redraw(context, brushsize, rect){
+
+    context.clearRect(0, 0, rect.height, rect.width); // Clears the canvas
     context.beginPath();
 
     context.strokeStyle = \"#000001\";
     context.lineJoin = "round";
     context.lineWidth = 3;
 
-    context.rect(0, 0, 200, 200);
+    context.rect(3, 3, rect.height-6, rect.width-6);
     context.stroke();
     context.lineWidth = brushsize;
 
@@ -33,7 +34,7 @@ function redraw(context, brushsize){
 }
 """
 
-function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
+function drawnumber(predict_func = (img)-> rand(0:9); resolution = (200, 200))
     width, height = resolution
 
     w = Widget()
@@ -56,7 +57,6 @@ function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
     on_finish = @js function (e, context)
         $painting[] = false
     end
-
     on_mousemove = @js function (e, context)
         @var el = context.dom.querySelector("#surface")
         @var context = el.getContext("2d")
@@ -65,7 +65,7 @@ function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
         @var y = e.clientY - rect.top;
         if $painting[]
             window.addclick(x, y, true);
-            window.redraw(context, $paintbrush_ob[]);
+            window.redraw(context, $paintbrush_ob[], rect);
         end
     end
     ondependencies(w, @js function ()
@@ -80,27 +80,28 @@ function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
         window.redraw = $redraw
         @var el = this.dom.querySelector("#surface")
         @var context = el.getContext("2d")
-        window.redraw(context, $paintbrush_ob[]);
+        @var rect = el.getBoundingClientRect();
+        window.redraw(context, $paintbrush_ob[], rect);
     end)
-    canvas = w(dom"canvas#surface[height=200,width=200]"(
+    canvas = w(dom"canvas#surface"(
         events = Dict(
             :mousemove => on_mousemove,
             :mousedown => on_mousedown,
             :mouseup => on_finish,
             :mouseleave => on_finish
-        )
+        ),
+        attributes = Dict(:height => "$(height)", :width => "$(width)")
     ))
     clear_obs = Observable(w, "clear_obs", false)
     getimg = Observable(w, "getimg", false)
     image = Observable(w, "image", "")
     pred_widget = Widget()
     prediction_obs = Observable(pred_widget, "prediction", "")
-    canvas_image = Matrix{RGBA{N0f8}}(width, height)
     on(image) do img_str64
         if !isempty(img_str64)
             str = replace(img_str64, "data:image/png;base64,", "")
             ui8vec = base64decode(str)
-            img = convert(Matrix{RGBA{N0f8}}, ImageMagick.load_(ui8vec))
+            img = Float64.(Gray.(convert(Matrix{RGBA{N0f8}}, ImageMagick.load_(ui8vec))))
             val = predict_func(img)
             prediction_str = val in 0:9 ? string(val) : ""
             prediction_obs[] = prediction_str
@@ -123,13 +124,15 @@ function drawnumber(predict_func = (img)-> rand(0:9), resolution = (200, 200))
         window.clickY = [];
         window.clickDrag = [];
         $painting[] = false
-        window.redraw(context, $paintbrush_ob[])
+        @var rect = el.getBoundingClientRect();
+        window.redraw(context, $paintbrush_ob[], rect)
     end)
 
     onjs(paintbrush_ob, @js function (val)
         @var el = this.dom.querySelector("#surface")
         @var context = el.getContext("2d")
-        window.redraw(context, $paintbrush_ob[])
+        @var rect = el.getBoundingClientRect();
+        window.redraw(context, $paintbrush_ob[], rect)
     end)
 
     clear = dom"button"("clear", events = Dict("click" => @js function ()

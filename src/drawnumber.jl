@@ -101,8 +101,18 @@ function drawnumber(predict_func = (img)-> rand(0:9); resolution = (200, 200))
         if !isempty(img_str64)
             str = replace(img_str64, "data:image/png;base64,", "")
             ui8vec = base64decode(str)
-            img = Float64.(Gray.(convert(Matrix{RGBA{N0f8}}, ImageMagick.load_(ui8vec))))
+            img = map(convert(Matrix{RGBA{N0f8}}, ImageMagick.load_(ui8vec))) do color
+                a = alpha(color)
+                if a ≈ 0.0
+                    return 1.0
+                else
+                    Float64(red(color))
+                end 
+            end
             val = predict_func(img)
+            if !isa(val, Integer)
+                error("Please return an integer from your prediction function. Found: $(typeof(val))")
+            end
             prediction_str = val in 0:9 ? string(val) : ""
             prediction_obs[] = prediction_str
         end

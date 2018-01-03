@@ -1,8 +1,7 @@
-using WebWidgets, Blink
+using WebWidgets, Blink, Colors, InteractNext
 using Base.Test
-imgs = []
-w = Window()
-test(img) = (push!(imgs, img); rand(0:9))
 
-body!(w, drawnumber(test, resolution = (500, 500)))
-# tools(w) # debug
+app, img, num = drawandpredictnumber(brushsize = 15, use_slider = false)
+num[]
+img[]
+app

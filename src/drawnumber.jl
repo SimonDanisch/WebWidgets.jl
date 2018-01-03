@@ -40,8 +40,13 @@ function redraw(context, brushsize, rect, drawtext){
 }
 """
 
-function drawnumber(resolution = (400, 400))
-    drawandpredictnumber(nothing, resolution = resolution, image_button = "get image")
+function drawnumber(;resolution = (400, 400), brushsize = 15, use_slider = false)
+    drawandpredictnumber(
+        nothing, resolution = resolution,
+        image_button = "get image",
+        brushsize = brushsize,
+        use_slider = use_slider,
+    )
 end
 
 function drawandpredictnumber(

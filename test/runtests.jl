@@ -5,5 +5,6 @@ app, img, num = drawandpredictnumber(brushsize = 15, use_slider = false, resolut
 num[]
 img[]
 app
-app, img = drawnumber(brushsize = 4, use_slider = true)
+app, img = drawnumber(brushsize = 6, use_slider = true)
 app
+Gray.(img[])

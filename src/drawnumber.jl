@@ -19,7 +19,7 @@ function redraw(context, brushsize, rect, drawtext){
         context.fillText(\"Draw here\", canvas.width/2, canvas.height/2);
     }
 
-    context.rect(6, 6, rect.height-12, rect.width-12);
+    context.rect(3, 3, rect.height-6, rect.width-6);
     context.stroke();
     context.lineWidth = brushsize;
 
@@ -61,8 +61,8 @@ function drawandpredictnumber(
     w = Widget()
     painting = Observable{Bool}(w, "painting", false)
     paintbrush_ob = Observable(w, "paintbrush", brushsize)
-    clear_ob = Observable(w, "clear_ob", false)
-    getimage_ob = Observable(w, "getimage", false)
+    clear_ob = Observable(w, "clear_ob", 0)
+    getimage_ob = Observable(w, "getimage", 0)
     clear_butt = button("clear", ob = clear_ob)
     getimage_butt = button(image_button, ob = getimage_ob)
 
@@ -136,9 +136,16 @@ function drawandpredictnumber(
                     Float64(red(color))
                 end
             end
-            while size(img, 1) > 30
-                img = Images.restrict(img)
+            imgnoborder = img[12:end-12, 12:end-12]
+            while true
+                if size(imgnoborder, 1) > 52
+                    imgnoborder = Images.restrict(imgnoborder)
+                else
+                    break
+                end
             end
+
+            img = Images.imresize(imgnoborder, (32, 32))[3:end-2, 3:end-2]
             image_float[] = img
             if predict_func != nothing
                 val = predict_func(img)

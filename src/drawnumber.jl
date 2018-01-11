@@ -2,6 +2,9 @@ module DrawNumber
 
 using WebIO, Colors, Images, ImageMagick
 using InteractNext, CSSUtil
+using ImageFiltering
+
+
 
 # using the string macro since for loops + ifs seem to make problems
 const redraw = js"""
@@ -128,24 +131,21 @@ function drawandpredictnumber(
         if !isempty(img_str64)
             str = replace(img_str64, "data:image/png;base64,", "")
             ui8vec = base64decode(str)
-            img = map(convert(Matrix{RGBA{N0f8}}, ImageMagick.load_(ui8vec))) do color
-                a = alpha(color)
-                if a ≈ 0.0
-                    return 1.0
-                else
-                    Float64(red(color))
-                end
+            img = map(convert(Matrix{RGBA{N0f8}}, ImageMagick.load_(ui8vec))) do c
+                Float64(alpha(c))
             end
-            imgnoborder = img[12:end-12, 12:end-12]
-            while true
-                if size(imgnoborder, 1) > 52
-                    imgnoborder = Images.restrict(imgnoborder)
-                else
-                    break
-                end
-            end
-
-            img = Images.imresize(imgnoborder, (32, 32))[3:end-2, 3:end-2]
+            img = img[12:end-12, 12:end-12]
+            sz = (28, 28)
+            σ = map((o,n)->0.3*o/n, size(img), sz)
+            kern = KernelFactors.gaussian(σ)  
+            img = Gray.(Images.imresize(imfilter(img, kern, NA()), sz))
+            # map!(img, img) do c
+            #     if c > 0.4
+            #         Images.clamp01(c + 0.2)
+            #     else
+            #         c
+            #     end
+            # end
             image_float[] = img
             if predict_func != nothing
                 val = predict_func(img)

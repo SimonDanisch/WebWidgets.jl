@@ -66,8 +66,6 @@ function drawandpredictnumber(
     paintbrush_ob = Observable(w, "paintbrush", brushsize)
     clear_ob = Observable(w, "clear_ob", 0)
     getimage_ob = Observable(w, "getimage", 0)
-    clear_butt = button("clear", ob = clear_ob)
-    getimage_butt = button(image_button, ob = getimage_ob)
 
     on_mousedown = @js function (e, context)
         $painting[] = true
@@ -200,6 +198,15 @@ function drawandpredictnumber(
     else
         nothing
     end
+
+    clear_butt = dom"button"("clear", events = Dict("click" => @js function ()
+       $clear_obs[] = !$clear_obs[]
+    end), style = Dict(:padding =>"10px 10px 10px 10px"))
+
+    getimage_butt = dom"button"(image_button, events = Dict("click" => @js function ()
+       $getimage_ob[] = !$getimage_ob[]
+    end), style = Dict(:padding =>"10px 10px 10px 10px"))
+
     app = vbox(vbox(paintbrushdiv, hbox(clear_butt, getimage_butt, prediction_text)), canvas)
     if predict_func != nothing
         app, image_float, prediction_num_obs

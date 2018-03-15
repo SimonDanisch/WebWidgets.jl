@@ -61,7 +61,7 @@ function drawandpredictnumber(
     )
     width, height = resolution
 
-    w = Widget()
+    w = Scope()
     painting = Observable{Bool}(w, "painting", false)
     paintbrush_ob = Observable(w, "paintbrush", brushsize)
     clear_obs = Observable(w, "clear_obs", false)
@@ -94,7 +94,7 @@ function drawandpredictnumber(
             window.redraw(context, $paintbrush_ob[], rect, false);
         end
     end
-    ondependencies(w, @js function ()
+    onimport(w, @js function ()
         window.clickX = @new Array()
         window.clickY = @new Array()
         window.clickDrag = @new Array()
@@ -121,7 +121,7 @@ function drawandpredictnumber(
     getimg = Observable(w, "getimg", false)
     image = Observable(w, "image", "")
     image_float = Observable(w, "image_float", ones(height, width))
-    pred_widget = Widget()
+    pred_widget = Scope()
     prediction_obs = Observable(pred_widget, "prediction", "")
     prediction_num_obs = Observable(pred_widget, "prediction num", 0)
     on(image) do img_str64

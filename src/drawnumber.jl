@@ -64,7 +64,7 @@ function drawandpredictnumber(
     w = Widget()
     painting = Observable{Bool}(w, "painting", false)
     paintbrush_ob = Observable(w, "paintbrush", brushsize)
-    clear_ob = Observable(w, "clear_ob", 0)
+    clear_obs = Observable(w, "clear_obs", false)
     getimage_ob = Observable(w, "getimage", 0)
 
     on_mousedown = @js function (e, context)
@@ -118,7 +118,6 @@ function drawandpredictnumber(
         ),
         attributes = Dict(:height => "$(height)", :width => "$(width)")
     ))
-    clear_obs = Observable(w, "clear_obs", false)
     getimg = Observable(w, "getimg", false)
     image = Observable(w, "image", "")
     image_float = Observable(w, "image_float", ones(height, width))
@@ -166,7 +165,7 @@ function drawandpredictnumber(
         prediction_text.textContent = val
     end)
 
-    onjs(clear_ob, @js function (val)
+    onjs(clear_obs, @js function (val)
         @var el = this.dom.querySelector("#surface")
         @var context = el.getContext("2d")
         window.clickX = [];

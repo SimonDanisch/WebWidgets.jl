@@ -2,6 +2,7 @@ using WebWidgets, Blink, Colors, InteractNext
 using Base.Test
 
 app, img, num = drawandpredictnumber(brushsize = 15, use_slider = false, resolution = (300, 300))
+app
 w = Window()
 body!(w, app)
 

@@ -4,6 +4,5 @@ isinstalled(pkg) = isdir(Pkg.dir(pkg))
 
 installgizmo(pkg) = isinstalled(pkg) || Pkg.clone("https://github.com/JuliaGizmos/$(pkg).jl")
 
-installgizmo("Vue")
 installgizmo("CSSUtil")
 installgizmo("InteractNext")

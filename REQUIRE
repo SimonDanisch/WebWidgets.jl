@@ -2,3 +2,8 @@ julia 0.6
 Colors
 Images
 ImageMagick
+WebIO 0.1.5
+JSExpr 0.1.0
+Observables 0.1.0
+#InteractNext
+#CSSUtil

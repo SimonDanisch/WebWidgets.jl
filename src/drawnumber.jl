@@ -2,7 +2,7 @@ module DrawNumber
 
 using WebIO, Colors, Images, ImageMagick
 using InteractNext, CSSUtil
-using ImageFiltering
+using ImageFiltering, JSExpr
 
 
 

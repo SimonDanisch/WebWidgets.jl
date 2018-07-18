@@ -1,5 +1,4 @@
-using WebWidgets, Blink, Colors, InteractNext
-using Base.Test
+using WebWidgets, Blink, Colors
 
 app, img, num = drawandpredictnumber(brushsize = 15, use_slider = false, resolution = (300, 300));
 w = Window();

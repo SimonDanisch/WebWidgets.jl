@@ -1,9 +1,8 @@
 module DrawNumber
 
 using WebIO, Colors, Images, ImageMagick
-using InteractNext, CSSUtil
+using CSSUtil
 using ImageFiltering, JSExpr
-
 
 
 # using the string macro since for loops + ifs seem to make problems

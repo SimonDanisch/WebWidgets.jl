@@ -11,11 +11,8 @@
 First install:
 ```Julia
 Pkg.clone("https://github.com/SimonDanisch/WebWidgets.jl")
-Pkg.build("WebWidgets")
 ```
 Updates:
 ```Julia
 Pkg.checkout("WebWidgets") 
-# Optional build, depending on what changed... Hopefully you never need to rebuild:
-# Pkg.build("WebWidgets")
 ```

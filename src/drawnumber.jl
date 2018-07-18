@@ -1,9 +1,8 @@
 module DrawNumber
 
 using WebIO, Colors, Images, ImageMagick
-using InteractNext, CSSUtil
-using ImageFiltering
-
+using CSSUtil
+using ImageFiltering, JSExpr
 
 
 # using the string macro since for loops + ifs seem to make problems
@@ -61,10 +60,10 @@ function drawandpredictnumber(
     )
     width, height = resolution
 
-    w = Widget()
+    w = Scope()
     painting = Observable{Bool}(w, "painting", false)
     paintbrush_ob = Observable(w, "paintbrush", brushsize)
-    clear_ob = Observable(w, "clear_ob", 0)
+    clear_obs = Observable(w, "clear_obs", false)
     getimage_ob = Observable(w, "getimage", 0)
 
     on_mousedown = @js function (e, context)
@@ -94,7 +93,7 @@ function drawandpredictnumber(
             window.redraw(context, $paintbrush_ob[], rect, false);
         end
     end
-    ondependencies(w, @js function ()
+    onimport(w, @js function ()
         window.clickX = @new Array()
         window.clickY = @new Array()
         window.clickDrag = @new Array()
@@ -118,11 +117,10 @@ function drawandpredictnumber(
         ),
         attributes = Dict(:height => "$(height)", :width => "$(width)")
     ))
-    clear_obs = Observable(w, "clear_obs", false)
     getimg = Observable(w, "getimg", false)
     image = Observable(w, "image", "")
     image_float = Observable(w, "image_float", ones(height, width))
-    pred_widget = Widget()
+    pred_widget = Scope()
     prediction_obs = Observable(pred_widget, "prediction", "")
     prediction_num_obs = Observable(pred_widget, "prediction num", 0)
     on(image) do img_str64
@@ -166,7 +164,7 @@ function drawandpredictnumber(
         prediction_text.textContent = val
     end)
 
-    onjs(clear_ob, @js function (val)
+    onjs(clear_obs, @js function (val)
         @var el = this.dom.querySelector("#surface")
         @var context = el.getContext("2d")
         window.clickX = [];
